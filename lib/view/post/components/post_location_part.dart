@@ -32,8 +32,8 @@ class PostLocationPart extends StatelessWidget {
   _latLngPart(Location? location, BuildContext context) {
     const spaceWidth = 8.0;
 
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
+    return Wrap(
+      crossAxisAlignment: WrapCrossAlignment.center,
       children: [
         Chip(
           label: Text(S.of(context).latitude),
