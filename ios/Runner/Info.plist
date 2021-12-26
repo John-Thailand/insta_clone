@@ -57,5 +57,13 @@
 			</array>
 		</dict>
 	</array>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>ギャラリーへのアクセスが必要です</string>
+	<key>NSCameraUsageDescription</key>
+	<string>カメラへのアクセスが必要です</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>マイクロフォンへのアクセスが必要です</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>This app needs access to location when open.</string>
 </dict>
 </plist>
