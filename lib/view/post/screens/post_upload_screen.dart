@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:insta_clone/generated/l10n.dart';
 import 'package:insta_clone/utils/constants.dart';
+import 'package:insta_clone/view/common/dialog/confirm_dialog.dart';
 import 'package:insta_clone/view/post/components/post_caption_part.dart';
 import 'package:insta_clone/view/post/components/post_location_part.dart';
 import 'package:insta_clone/view_models/post_view_model.dart';
@@ -41,7 +42,14 @@ class PostUploadScreen extends StatelessWidget {
                     icon: Icon(Icons.close),
                   )
                 : IconButton(
-                    onPressed: null,
+                    onPressed: () => showConfirmDialog(
+                      context: context,
+                      title: S.of(context).post,
+                      content: S.of(context).postConfirm,
+                      onConfirmed: (isConfirmed) {
+                        _post(context);
+                      },
+                    ),
                     icon: Icon(Icons.done),
                   )
           ],
@@ -65,7 +73,16 @@ class PostUploadScreen extends StatelessWidget {
     });
   }
 
-  _cancelPost(BuildContext context) {
+  _cancelPost(BuildContext context) async {
+    final postViewModel = context.read<PostViewModel>();
+    postViewModel.cancelPost();
+    Navigator.pop(context);
+  }
+
+  void _post(BuildContext context) async {
+    print("PostUploadScreen#_post invoked");
+    final postViewModel = context.read<PostViewModel>();
+    await postViewModel.post();
     Navigator.pop(context);
   }
 }

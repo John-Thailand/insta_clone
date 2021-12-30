@@ -37,6 +37,13 @@ class LocationManager {
         convert(placeMark, position.latitude, position.longitude));
   }
 
+  Future<Location> updateLocation(double latitude, double longitude) async {
+    final placeMarks =
+        await geoCoding.placemarkFromCoordinates(latitude, longitude);
+    final placeMark = placeMarks.first;
+    return Future.value(convert(placeMark, latitude, longitude));
+  }
+
   // Locationクラスに変換
   Location convert(
       geoCoding.Placemark placeMark, double latitude, double longitude) {

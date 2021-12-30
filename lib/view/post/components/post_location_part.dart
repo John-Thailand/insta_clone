@@ -3,6 +3,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:insta_clone/data_models/location.dart';
 import 'package:insta_clone/generated/l10n.dart';
 import 'package:insta_clone/style.dart';
+import 'package:insta_clone/view/post/screens/map_screen.dart';
 import 'package:insta_clone/view_models/post_view_model.dart';
 import 'package:provider/provider.dart';
 
@@ -22,7 +23,7 @@ class PostLocationPart extends StatelessWidget {
         ),
         subtitle: _latLngPart(postViewModel.location, context),
         trailing: IconButton(
-          onPressed: null,
+          onPressed: () => _openMapScreen(context, postViewModel.location),
           icon: FaIcon(FontAwesomeIcons.mapMarkerAlt),
         ),
       ),
@@ -50,6 +51,17 @@ class PostLocationPart extends StatelessWidget {
             ? location.longitude.toStringAsFixed(2)
             : "0.00"),
       ],
+    );
+  }
+
+  _openMapScreen(BuildContext context, Location? location) {
+    if (location == null) return;
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => MapScreen(location: location),
+      ),
     );
   }
 }
