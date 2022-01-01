@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:insta_clone/utils/constants.dart';
+import 'package:insta_clone/view/feed/components/feed_post_tile.dart';
 import 'package:insta_clone/view_models/feed_view_model.dart';
 import 'package:provider/provider.dart';
 
@@ -16,10 +17,24 @@ class FeedSubPage extends StatelessWidget {
 
     Future(() => feedViewModel.getPosts(feedMode));
 
-    return Scaffold(
-      body: Center(
-        child: Text("FeedSubPage"),
-      ),
+    return Consumer<FeedViewModel>(
+      builder: (context, model, child) {
+        if (model.isProcessing) {
+          return Center(
+            child: CircularProgressIndicator(),
+          );
+        } else {
+          return ListView.builder(
+            itemCount: model.posts!.length,
+            itemBuilder: (context, index) {
+              return FeedPostTile(
+                feedMode: feedMode,
+                post: model.posts![index],
+              );
+            },
+          );
+        }
+      },
     );
   }
 }

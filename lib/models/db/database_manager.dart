@@ -70,7 +70,13 @@ class DatabaseManager {
           (numberOfChunks - 1) * 10, (numberOfChunks - 1) * 10 + remainder));
     }
 
-    print("posts: $results");
+    var results = <Post>[];
+    await Future.forEach(userIdChunks, (List<String> userIds) async {
+      final tempPosts = await getPostsOfChunkedUsers(userIds);
+      tempPosts.forEach((post) {
+        results.add(post);
+      });
+    });
     return results;
   }
 
