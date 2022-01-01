@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class ImageFromUrl extends StatelessWidget {
@@ -7,10 +8,15 @@ class ImageFromUrl extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Container(
-        child: Image.network(imageUrl!),
-      ),
-    );
+    if (imageUrl == null) {
+      return const Icon(Icons.broken_image);
+    } else {
+      return CachedNetworkImage(
+        imageUrl: imageUrl!,
+        placeholder: (context, url) => CircularProgressIndicator(),
+        errorWidget: (context, url, error) => Icon(Icons.error),
+        fit: BoxFit.cover,
+      );
+    }
   }
 }

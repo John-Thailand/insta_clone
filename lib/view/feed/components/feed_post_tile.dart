@@ -28,19 +28,26 @@ class FeedPostTile extends StatelessWidget {
       child: FutureBuilder(
         future: feedViewModel.getPostUserInfo(post.userId),
         builder: (context, AsyncSnapshot<User> snapshot) {
-          final postUser = snapshot.data;
+          final postUser = snapshot.data!;
           final currentUser = feedViewModel.currentUser;
           print("postUser: $postUser");
           return Column(
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              FeedPostHeaderPart(),
+              FeedPostHeaderPart(
+                currentUser: currentUser,
+                post: post,
+                postUser: postUser,
+              ),
               ImageFromUrl(
                 imageUrl: post.imageUrl,
               ),
               FeedPostLikesPart(),
-              FeedPostCommentsPart(),
+              FeedPostCommentsPart(
+                postUser: postUser,
+                post: post,
+              ),
             ],
           );
         },

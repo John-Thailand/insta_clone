@@ -1,4 +1,4 @@
-import 'dart:html';
+import 'dart:io';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -20,7 +20,7 @@ class CirclePhoto extends StatelessWidget {
     return CircleAvatar(
       radius: radius,
       backgroundImage: isImageFromFile
-          ? FileImage(File(100, photoUrl))
+          ? FileImage(File(photoUrl))
           : CachedNetworkImageProvider(photoUrl) as ImageProvider,
     );
   }

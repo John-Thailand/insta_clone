@@ -10,8 +10,10 @@ import 'package:insta_clone/di/providers.dart';
 import 'package:provider/provider.dart';
 
 import 'firebase_options.dart';
+import 'package:timeago/timeago.dart' as timeago;
 
 void main() async {
+  timeago.setLocaleMessages("ja", timeago.JaMessages());
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
