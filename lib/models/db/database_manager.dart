@@ -110,5 +110,10 @@ class DatabaseManager {
     return userIds;
   }
 
+  Future<void> updatePost(Post updatePost) async {
+    final reference = _db.collection("posts").doc(updatePost.postId);
+    await reference.update(updatePost.toMap());
+  }
+
   // Future<List<Post>> getPostsByUser(String userId) {}
 }

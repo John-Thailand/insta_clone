@@ -1,11 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:insta_clone/generated/l10n.dart';
 import 'package:insta_clone/style.dart';
+import 'package:insta_clone/utils/constants.dart';
+import 'package:insta_clone/view_models/feed_view_model.dart';
 import 'package:insta_clone/view_models/post_view_model.dart';
 import 'package:provider/provider.dart';
 
 class PostCaptionInputTextField extends StatefulWidget {
-  const PostCaptionInputTextField({Key? key}) : super(key: key);
+  final String? captionBeforeUpdated;
+  final PostCaptionOpenMode? from;
+
+  const PostCaptionInputTextField(
+      {Key? key, this.captionBeforeUpdated, this.from})
+      : super(key: key);
 
   @override
   _PostCaptionInputTextFieldState createState() =>
@@ -20,6 +27,11 @@ class _PostCaptionInputTextFieldState extends State<PostCaptionInputTextField> {
     _captionController.addListener(() {
       _onCaptionUpdated();
     });
+
+    if (widget.from == PostCaptionOpenMode.FROM_FEED) {
+      _captionController.text = widget.captionBeforeUpdated ?? "";
+    }
+
     super.initState();
   }
 
@@ -45,8 +57,14 @@ class _PostCaptionInputTextFieldState extends State<PostCaptionInputTextField> {
   }
 
   _onCaptionUpdated() {
-    final viewModel = context.read<PostViewModel>();
-    viewModel.caption = _captionController.text;
-    print("caption: ${viewModel.caption}");
+    if (widget.from == PostCaptionOpenMode.FROM_FEED) {
+      final viewModel = context.read<FeedViewModel>();
+      viewModel.caption = _captionController.text;
+      print("caption: ${viewModel.caption}");
+    } else {
+      final viewModel = context.read<PostViewModel>();
+      viewModel.caption = _captionController.text;
+      print("caption: ${viewModel.caption}");
+    }
   }
 }
