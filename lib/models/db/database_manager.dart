@@ -32,6 +32,7 @@ class DatabaseManager {
     return User.fromMap(query.docs[0].data());
   }
 
+  // ストレージに画像を追加する
   Future<String> uploadImageToStrage(File imageFile, String storageId) async {
     final storageRef = FirebaseStorage.instance.ref().child(storageId);
     final uploadTask = storageRef.putFile(imageFile);
@@ -39,10 +40,12 @@ class DatabaseManager {
         .then((TaskSnapshot snapshot) => snapshot.ref.getDownloadURL());
   }
 
+  // 投稿を追加する
   Future<void> insertPost(Post post) async {
     await _db.collection('posts').doc(post.postId).set(post.toMap());
   }
 
+  // 自身とフォローしているユーザーの投稿を取得する処理
   Future<List<Post>> getPostsMineAndFollowings(String userId) async {
     // データの有無を判定
     final query = await _db.collection("posts").get();
@@ -80,6 +83,7 @@ class DatabaseManager {
     return results;
   }
 
+  // 10件の塊で情報を取得する
   Future<List<Post>> getPostsOfChunkedUsers(List<String> userIds) async {
     var results = <Post>[];
     await _db
@@ -95,6 +99,7 @@ class DatabaseManager {
     return results;
   }
 
+  // フォローしているユーザーIDを取得する処理
   Future<List<String>> getFollowingUserIds(String userId) async {
     final query = await _db
         .collection("users")
@@ -110,6 +115,7 @@ class DatabaseManager {
     return userIds;
   }
 
+  // 投稿を更新する処理
   Future<void> updatePost(Post updatePost) async {
     final reference = _db.collection("posts").doc(updatePost.postId);
     await reference.update(updatePost.toMap());
