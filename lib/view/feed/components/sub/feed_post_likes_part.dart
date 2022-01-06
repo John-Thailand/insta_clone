@@ -1,10 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:insta_clone/data_models/post.dart';
+import 'package:insta_clone/data_models/user.dart';
 import 'package:insta_clone/generated/l10n.dart';
 import 'package:insta_clone/style.dart';
+import 'package:insta_clone/view/comments/screens/comments_screen.dart';
 
 class FeedPostLikesPart extends StatelessWidget {
-  const FeedPostLikesPart({Key? key}) : super(key: key);
+  final Post post;
+  final User postUser;
+
+  const FeedPostLikesPart(
+      {Key? key, required this.post, required this.postUser})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +29,7 @@ class FeedPostLikesPart extends StatelessWidget {
                 icon: FaIcon(FontAwesomeIcons.solidHeart),
               ),
               IconButton(
-                onPressed: null,
+                onPressed: () => _openCommentsScreen(context, post),
                 icon: FaIcon(FontAwesomeIcons.comment),
               ),
             ],
@@ -31,6 +39,18 @@ class FeedPostLikesPart extends StatelessWidget {
             style: numberOfLikesTextStyle,
           )
         ],
+      ),
+    );
+  }
+
+  _openCommentsScreen(BuildContext context, Post post) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => CommentsScreen(
+          post: post,
+          postUser: postUser,
+        ),
       ),
     );
   }

@@ -43,3 +43,7 @@ const commentContentTextStyle = TextStyle(
   fontFamily: RegularFont,
   fontSize: 13.0,
 );
+const commentInputTextStyle = TextStyle(
+  fontFamily: RegularFont,
+  fontSize: 14.0,
+);

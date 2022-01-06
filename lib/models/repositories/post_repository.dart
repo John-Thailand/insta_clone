@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:insta_clone/data_models/comments.dart';
 import 'package:insta_clone/data_models/location.dart';
 import 'package:insta_clone/data_models/post.dart';
 import 'package:insta_clone/data_models/user.dart';
@@ -73,5 +74,21 @@ class PostRepository {
 
   Future<void> updatePost(Post updatePost) async {
     return dbManager.updatePost(updatePost);
+  }
+
+  Future<void> postComment(
+      Post post, User commentUser, String commentString) async {
+    final comment = Comment(
+      postId: post.postId,
+      comment: commentString,
+      commentDateTime: DateTime.now(),
+      commentUserId: commentUser.userId,
+      commentId: Uuid().v1(),
+    );
+    await dbManager.postComment(comment);
+  }
+
+  Future<List<Comment>> getComments(String postId) async {
+    return dbManager.getComments(postId);
   }
 }
