@@ -1,19 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:insta_clone/data_models/user.dart';
 import 'package:insta_clone/utils/constants.dart';
 import 'package:insta_clone/view/feed/components/feed_post_tile.dart';
 import 'package:insta_clone/view_models/feed_view_model.dart';
 import 'package:provider/provider.dart';
+import 'package:scrollable_positioned_list/scrollable_positioned_list.dart';
 
 class FeedSubPage extends StatelessWidget {
   final FeedMode feedMode;
+  final User? feedUser;
+  final int index;
 
-  const FeedSubPage({Key? key, required this.feedMode}) : super(key: key);
+  const FeedSubPage(
+      {Key? key, required this.feedMode, this.feedUser, required this.index})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     final feedViewModel = context.read<FeedViewModel>();
-    //TODO プロフィール画面から来た場合はUserの設定が必要
-    feedViewModel.setFeedUser(feedMode, null);
+    feedViewModel.setFeedUser(feedMode, feedUser);
 
     Future(() => feedViewModel.getPosts(feedMode));
 
@@ -26,7 +31,8 @@ class FeedSubPage extends StatelessWidget {
         } else {
           return RefreshIndicator(
             onRefresh: () => model.getPosts(feedMode),
-            child: ListView.builder(
+            child: ScrollablePositionedList.builder(
+              initialScrollIndex: index,
               physics: AlwaysScrollableScrollPhysics(),
               itemCount: model.posts!.length,
               itemBuilder: (context, index) {

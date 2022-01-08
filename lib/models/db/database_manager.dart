@@ -47,6 +47,26 @@ class DatabaseManager {
     await _db.collection('posts').doc(post.postId).set(post.toMap());
   }
 
+  Future<List<Post>> getPostsByUser(String userId) async {
+    final query = await _db.collection("posts").get();
+
+    if (query.docs.length == 0) return [];
+
+    var results = <Post>[];
+    await _db
+        .collection("posts")
+        .where("userId", isEqualTo: userId)
+        .orderBy("postDateTime", descending: true)
+        .get()
+        .then((value) {
+      value.docs.forEach((element) {
+        results.add(Post.fromMap(element.data()));
+      });
+    });
+
+    return results;
+  }
+
   // 自身とフォローしているユーザーの投稿を取得する処理
   Future<List<Post>> getPostsMineAndFollowings(String userId) async {
     // データの有無を判定
@@ -113,6 +133,17 @@ class DatabaseManager {
     var userIds = <String>[];
     query.docs.forEach((id) {
       userIds.add(id.data()['userId']);
+    });
+    return userIds;
+  }
+
+  Future<List<String>> getFollowerUserIds(String userId) async {
+    final query =
+        await _db.collection("users").doc(userId).collection("followers").get();
+    if (query.docs.length == 0) return [];
+    var userIds = <String>[];
+    query.docs.forEach((id) {
+      userIds.add(id.data()["userId"]);
     });
     return userIds;
   }
@@ -215,5 +246,8 @@ class DatabaseManager {
     storageRef.delete();
   }
 
-  // Future<List<Post>> getPostsByUser(String userId) {}
+  Future<void> updateProfile(User updateUser) async {
+    final reference = _db.collection("users").doc(updateUser.userId);
+    await reference.update(updateUser.toMap());
+  }
 }
