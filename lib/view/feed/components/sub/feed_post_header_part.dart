@@ -4,7 +4,10 @@ import 'package:insta_clone/data_models/user.dart';
 import 'package:insta_clone/generated/l10n.dart';
 import 'package:insta_clone/utils/constants.dart';
 import 'package:insta_clone/view/common/components/user_card.dart';
+import 'package:insta_clone/view/common/dialog/confirm_dialog.dart';
 import 'package:insta_clone/view/feed/screens/feed_post_edit_screen.dart';
+import 'package:insta_clone/view_models/feed_view_model.dart';
+import 'package:provider/provider.dart';
 import 'package:share/share.dart';
 
 class FeedPostHeaderPart extends StatelessWidget {
@@ -75,11 +78,22 @@ class FeedPostHeaderPart extends StatelessWidget {
         );
         break;
       case PostMenu.DELETE:
-        // TODO: Handle this case.
+        showConfirmDialog(
+            context: context,
+            title: S.of(context).deletePost,
+            content: S.of(context).deletePostConfirm,
+            onConfirmed: (isConfirmed) {
+              if (isConfirmed) _deletePost(context, post);
+            });
         break;
       case PostMenu.SHARE:
         Share.share(post.imageUrl, subject: post.caption);
         break;
     }
+  }
+
+  void _deletePost(BuildContext context, Post post) async {
+    final feedViewModel = context.read<FeedViewModel>();
+    await feedViewModel.deletePost(post, feedMode);
   }
 }

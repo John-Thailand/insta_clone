@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:insta_clone/data_models/comments.dart';
+import 'package:insta_clone/data_models/like.dart';
 import 'package:insta_clone/data_models/post.dart';
 import 'package:insta_clone/data_models/user.dart';
 
@@ -151,6 +152,67 @@ class DatabaseManager {
   Future<void> deleteComment(String deleteCommentId) async {
     final reference = _db.collection("comments").doc(deleteCommentId);
     await reference.delete();
+  }
+
+  Future<void> likeIt(Like like) async {
+    await _db.collection("likes").doc(like.likeId).set(like.toMap());
+  }
+
+  Future<void> unLikeIt(Post post, User currentUser) async {
+    final likeRef = await _db
+        .collection("likes")
+        .where("postId", isEqualTo: post.postId)
+        .where("likeUserId", isEqualTo: currentUser.userId)
+        .get();
+    likeRef.docs.forEach((element) async {
+      final ref = _db.collection("likes").doc(element.id);
+      await ref.delete();
+    });
+  }
+
+  Future<List<Like>> getLikes(String postId) async {
+    final query = await _db.collection("likes").get();
+    if (query.docs.length == 0) return [];
+    var results = <Like>[];
+    await _db
+        .collection("likes")
+        .where("postId", isEqualTo: postId)
+        .orderBy("likeDateTime")
+        .get()
+        .then((value) {
+      value.docs.forEach((element) {
+        results.add(Like.fromMap(element.data()));
+      });
+    });
+    return results;
+  }
+
+  Future<void> deletePost(String postId, String imageStoragePath) async {
+    // Postの削除
+    final postRef = _db.collection("posts").doc(postId);
+    await postRef.delete();
+
+    // Commentの削除
+    final commentRef = await _db
+        .collection("comments")
+        .where("postId", isEqualTo: postId)
+        .get();
+    commentRef.docs.forEach((element) async {
+      final ref = _db.collection("comments").doc(element.id);
+      await ref.delete();
+    });
+
+    // Likesの削除
+    final likeRef =
+        await _db.collection("likes").where("postId", isEqualTo: postId).get();
+    likeRef.docs.forEach((element) async {
+      final ref = _db.collection("likes").doc(element.id);
+      await ref.delete();
+    });
+
+    // Storageから画像を削除
+    final storageRef = FirebaseStorage.instance.ref().child(imageStoragePath);
+    storageRef.delete();
   }
 
   // Future<List<Post>> getPostsByUser(String userId) {}
