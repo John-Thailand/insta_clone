@@ -148,5 +148,10 @@ class DatabaseManager {
     return results;
   }
 
+  Future<void> deleteComment(String deleteCommentId) async {
+    final reference = _db.collection("comments").doc(deleteCommentId);
+    await reference.delete();
+  }
+
   // Future<List<Post>> getPostsByUser(String userId) {}
 }

@@ -9,37 +9,46 @@ class CommentDisplayPart extends StatelessWidget {
   final String name;
   final String text;
   final DateTime postDateTime;
+  final GestureLongPressCallback? onLongPressed;
 
   CommentDisplayPart({
     required this.postUserPhotoUrl,
     required this.name,
     required this.text,
     required this.postDateTime,
+    this.onLongPressed,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        CirclePhoto(photoUrl: postUserPhotoUrl, isImageFromFile: false),
-        SizedBox(width: 8.0),
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              CommentRichText(
-                name: name,
-                text: text,
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: InkWell(
+        splashColor: Colors.grey,
+        onLongPress: onLongPressed,
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            CirclePhoto(photoUrl: postUserPhotoUrl, isImageFromFile: false),
+            SizedBox(width: 8.0),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CommentRichText(
+                    name: name,
+                    text: text,
+                  ),
+                  Text(
+                    createTimeAgoString(postDateTime),
+                    style: timeAgoTextStyle,
+                  )
+                ],
               ),
-              Text(
-                createTimeAgoString(postDateTime),
-                style: timeAgoTextStyle,
-              )
-            ],
-          ),
-        )
-      ],
+            )
+          ],
+        ),
+      ),
     );
   }
 }
