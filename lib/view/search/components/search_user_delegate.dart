@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:insta_clone/data_models/user.dart';
+import 'package:insta_clone/view/common/components/user_card.dart';
 import 'package:insta_clone/view_models/search_view_model.dart';
 import 'package:provider/provider.dart';
 
@@ -51,6 +52,21 @@ class SearchUserDelegate extends SearchDelegate<User?> {
 
   // TODO ユーザー検索処理
   Widget _buildResults(BuildContext context) {
-    return Container();
+    return Consumer<SearchViewModel>(
+      builder: (context, model, child) => ListView.builder(
+        itemCount: model.soughtUsers.length,
+        itemBuilder: (context, int index) {
+          final user = model.soughtUsers[index];
+          return UserCard(
+            photoUrl: user.photoUrl,
+            title: user.inAppUserName,
+            subTitle: user.bio,
+            onTap: () {
+              close(context, user);
+            },
+          );
+        },
+      ),
+    );
   }
 }

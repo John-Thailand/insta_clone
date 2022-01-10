@@ -38,16 +38,27 @@ class ProfileBio extends StatelessWidget {
   }
 
   _button(BuildContext context, User profileUser) {
+    final profileViewModel = context.read<ProfileViewModel>();
+    final isFollowing = profileViewModel.isFollowingProfileUser;
+
     return ElevatedButton(
       style: ElevatedButton.styleFrom(
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(4.0),
         ),
       ),
-      onPressed: () => _openEditProfileScreen(context),
+      onPressed: () {
+        mode == ProfileMode.MYSELF
+            ? _openEditProfileScreen(context)
+            : isFollowing
+                ? _unFollow(context)
+                : _follow(context);
+      },
       child: mode == ProfileMode.MYSELF
           ? Text(S.of(context).editProfile)
-          : Text("フォローする"),
+          : isFollowing
+              ? Text(S.of(context).unFollow)
+              : Text(S.of(context).follow),
     );
   }
 
@@ -58,5 +69,15 @@ class ProfileBio extends StatelessWidget {
         builder: (context) => EditProfileScreen(),
       ),
     );
+  }
+
+  _follow(BuildContext context) {
+    final profileViewModel = context.read<ProfileViewModel>();
+    profileViewModel.follow();
+  }
+
+  _unFollow(BuildContext context) {
+    final profileViewModel = context.read<ProfileViewModel>();
+    profileViewModel.unFollow();
   }
 }

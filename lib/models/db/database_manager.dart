@@ -270,4 +270,59 @@ class DatabaseManager {
 
     return soughtUsers;
   }
+
+  Future<void> follow(User profileUser, User currentUser) async {
+    // CurrentUserにとってのfollowingsは
+    await _db
+        .collection("users")
+        .doc(currentUser.userId)
+        .collection("followings")
+        .doc(profileUser.userId)
+        .set({"userId": profileUser.userId});
+    // profileUserにとってのfollowers
+    await _db
+        .collection("users")
+        .doc(profileUser.userId)
+        .collection("followers")
+        .doc(currentUser.userId)
+        .set({"userId": currentUser.userId});
+  }
+
+  Future<bool> checkIsFollowing(User profileUser, User currentUser) async {
+    final query = await _db
+        .collection("users")
+        .doc(currentUser.userId)
+        .collection("followings")
+        .get();
+    if (query.docs.length == 0) return false;
+    final checkQuery = await _db
+        .collection("users")
+        .doc(currentUser.userId)
+        .collection("followings")
+        .where("userId", isEqualTo: profileUser.userId)
+        .get();
+    if (checkQuery.docs.length > 0) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  Future<void> unFollow(User profileUser, User currentUser) async {
+    // CurrentUserのfollowingsからの削除
+    await _db
+        .collection("users")
+        .doc(currentUser.userId)
+        .collection("followings")
+        .doc(profileUser.userId)
+        .delete();
+
+    // ProfileUserのfollowersからの削除
+    await _db
+        .collection("users")
+        .doc(profileUser.userId)
+        .collection("followers")
+        .doc(currentUser.userId)
+        .delete();
+  }
 }
