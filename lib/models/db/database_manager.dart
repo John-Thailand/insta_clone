@@ -325,4 +325,40 @@ class DatabaseManager {
         .doc(currentUser.userId)
         .delete();
   }
+
+  Future<List<User>> getLikesUsers(String postId) async {
+    final query =
+        await _db.collection("likes").where('postId', isEqualTo: postId).get();
+    if (query.docs.length == 0) return [];
+    var userIds = <String>[];
+    query.docs.forEach((id) {
+      userIds.add(id.data()['likeUserId']);
+    });
+    var likesUsers = <User>[];
+    await Future.forEach(userIds, (String userId) async {
+      final user = await getUserInfoFromDbById(userId);
+      likesUsers.add(user);
+    });
+    return likesUsers;
+  }
+
+  Future<List<User>> getFollowerUsers(String profileUserId) async {
+    final followerUserIds = await getFollowerUserIds(profileUserId);
+    var followerUsers = <User>[];
+    await Future.forEach(followerUserIds, (String followerUserId) async {
+      final user = await getUserInfoFromDbById(followerUserId);
+      followerUsers.add(user);
+    });
+    return followerUsers;
+  }
+
+  Future<List<User>> getFollowingUsers(String profileUserId) async {
+    final followingUserIds = await getFollowingUserIds(profileUserId);
+    var followingUsers = <User>[];
+    await Future.forEach(followingUserIds, (String followingUserId) async {
+      final user = await getUserInfoFromDbById(followingUserId);
+      followingUsers.add(user);
+    });
+    return followingUsers;
+  }
 }

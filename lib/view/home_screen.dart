@@ -28,6 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ActivitiesPage(),
       ProfilePage(
         profileMode: ProfileMode.MYSELF,
+        isOpenFromProfileScreen: false,
       ),
     ];
     super.initState();

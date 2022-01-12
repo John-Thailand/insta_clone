@@ -108,6 +108,7 @@ class FeedPostHeaderPart extends StatelessWidget {
               ? ProfileMode.MYSELF
               : ProfileMode.OTHER,
           selectedUser: postUser,
+          popProfileUserId: currentUser.userId,
         ),
       ),
     );

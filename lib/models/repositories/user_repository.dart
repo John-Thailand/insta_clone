@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart' as auth;
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:insta_clone/data_models/user.dart';
 import 'package:insta_clone/models/db/database_manager.dart';
+import 'package:insta_clone/utils/constants.dart';
 import 'package:uuid/uuid.dart';
 
 class UserRepository {
@@ -135,5 +136,26 @@ class UserRepository {
   Future<void> unFollow(User profileUser) async {
     if (currentUser != null)
       await dbManager.unFollow(profileUser, currentUser!);
+  }
+
+  Future<List<User>> getCaresMeUsers(String id, WhoCaresMeMode mode) async {
+    var results = <User>[];
+
+    switch (mode) {
+      case WhoCaresMeMode.LIKE:
+        final postId = id;
+        results = await dbManager.getLikesUsers(postId);
+        break;
+      case WhoCaresMeMode.FOLLOWED:
+        final profileUserId = id;
+        results = await dbManager.getFollowerUsers(profileUserId);
+        break;
+      case WhoCaresMeMode.FOLLOWINGS:
+        final profileUserId = id;
+        results = await dbManager.getFollowingUsers(profileUserId);
+        break;
+    }
+
+    return results;
   }
 }

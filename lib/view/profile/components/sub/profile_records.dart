@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:insta_clone/generated/l10n.dart';
 import 'package:insta_clone/style.dart';
+import 'package:insta_clone/utils/constants.dart';
+import 'package:insta_clone/view/who_cares_me_screen/screens/who_cares_me_screen.dart';
 import 'package:insta_clone/view_models/profile_view_model.dart';
+import 'package:insta_clone/view_models/who_cares_me_view_model.dart';
 import 'package:provider/provider.dart';
 
 class ProfileRecords extends StatelessWidget {
@@ -30,6 +33,7 @@ class ProfileRecords extends StatelessWidget {
               context: context,
               score: snapshot.hasData ? snapshot.data! : 0,
               title: S.of(context).followers,
+              whoCaresMeMode: WhoCaresMeMode.FOLLOWED,
             );
           },
         ),
@@ -40,6 +44,7 @@ class ProfileRecords extends StatelessWidget {
               context: context,
               score: snapshot.hasData ? snapshot.data! : 0,
               title: S.of(context).followings,
+              whoCaresMeMode: WhoCaresMeMode.FOLLOWINGS,
             );
           },
         ),
@@ -50,20 +55,40 @@ class ProfileRecords extends StatelessWidget {
   _userRecordWidget(
       {required BuildContext context,
       required int score,
-      required String title}) {
+      required String title,
+      WhoCaresMeMode? whoCaresMeMode}) {
     return Expanded(
       flex: 1,
-      child: Column(
-        children: [
-          Text(
-            score.toString(),
-            style: profileRecordScoreTextStyle,
-          ),
-          Text(
-            title.toString(),
-            style: profileRecordTitleTextStyle,
-          ),
-        ],
+      child: GestureDetector(
+        onTap: whoCaresMeMode == null
+            ? null
+            : () => _checkFollowUsers(context, whoCaresMeMode),
+        child: Column(
+          children: [
+            Text(
+              score.toString(),
+              style: profileRecordScoreTextStyle,
+            ),
+            Text(
+              title.toString(),
+              style: profileRecordTitleTextStyle,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  _checkFollowUsers(BuildContext context, WhoCaresMeMode whoCaresMeMode) {
+    final profileViewModel = context.read<ProfileViewModel>();
+    final profileUser = profileViewModel.profileUser;
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => WhoCaresMeScreen(
+          mode: whoCaresMeMode,
+          id: profileUser.userId,
+        ),
       ),
     );
   }
