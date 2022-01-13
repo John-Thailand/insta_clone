@@ -4,6 +4,38 @@ const TitleFont = "Billabong";
 const RegularFont = "NotoSansJP-Medium";
 const BoldFont = "NotoSansJP-Bold";
 
+// テーマ
+final darkTheme = ThemeData(
+  brightness: Brightness.dark,
+  elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+    primary: Colors.white30,
+  )),
+  primaryIconTheme: IconThemeData(
+    color: Colors.white,
+  ),
+  iconTheme: IconThemeData(
+    color: Colors.white,
+  ),
+  fontFamily: RegularFont,
+);
+
+final lightTheme = ThemeData(
+  primaryColor: Colors.white,
+  brightness: Brightness.light,
+  elevatedButtonTheme: ElevatedButtonThemeData(
+      style: ElevatedButton.styleFrom(
+    primary: Colors.white,
+  )),
+  primaryIconTheme: IconThemeData(
+    color: Colors.black,
+  ),
+  iconTheme: IconThemeData(
+    color: Colors.black,
+  ),
+  fontFamily: RegularFont,
+);
+
 //Login
 const loginTitleTextStyle = TextStyle(fontFamily: TitleFont, fontSize: 48);
 

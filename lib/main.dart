@@ -2,11 +2,13 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:insta_clone/generated/l10n.dart';
+import 'package:insta_clone/models/repositories/theme_change_repository.dart';
 import 'package:insta_clone/style.dart';
 import 'package:insta_clone/view/home_screen.dart';
 import 'package:insta_clone/view/login/screens/login_screen.dart';
 import 'package:insta_clone/view_models/login_view_model.dart';
 import 'package:insta_clone/di/providers.dart';
+import 'package:insta_clone/view_models/theme_change_view_model.dart';
 import 'package:provider/provider.dart';
 
 import 'firebase_options.dart';
@@ -15,9 +17,12 @@ import 'package:timeago/timeago.dart' as timeago;
 void main() async {
   timeago.setLocaleMessages("ja", timeago.JaMessages());
   WidgetsFlutterBinding.ensureInitialized();
+  final themeChangeRepository = ThemeChangeRepository();
+  await themeChangeRepository.getIsDarkOn();
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
   runApp(
     MultiProvider(
       providers: globalProviders,
@@ -32,6 +37,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final loginViewModel = context.read<LoginViewModel>();
+    final themeChangeViewModel = Provider.of<ThemeChangeViewModel>(context);
 
     return MaterialApp(
       title: "DaitaInstagram",
@@ -43,20 +49,7 @@ class MyApp extends StatelessWidget {
         GlobalCupertinoLocalizations.delegate,
       ],
       supportedLocales: S.delegate.supportedLocales,
-      theme: ThemeData(
-        brightness: Brightness.dark,
-        elevatedButtonTheme: ElevatedButtonThemeData(
-            style: ElevatedButton.styleFrom(
-          primary: Colors.white30,
-        )),
-        primaryIconTheme: IconThemeData(
-          color: Colors.white,
-        ),
-        iconTheme: IconThemeData(
-          color: Colors.white,
-        ),
-        fontFamily: RegularFont,
-      ),
+      theme: themeChangeViewModel.selectedTheme,
       home: FutureBuilder(
           future: loginViewModel.isSignIn(),
           builder: (context, AsyncSnapshot<bool> snapshot) {
