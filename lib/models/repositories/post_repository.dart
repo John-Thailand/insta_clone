@@ -12,6 +12,7 @@ import 'package:insta_clone/models/location/location_manager.dart';
 import 'package:insta_clone/utils/constants.dart';
 import 'package:uuid/uuid.dart';
 
+// 投稿処理（Model）
 class PostRepository {
   final DatabaseManager dbManager;
   final LocationManager locationManager;
