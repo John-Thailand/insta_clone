@@ -33,6 +33,7 @@ class PostRepository {
     }
   }
 
+  // 位置情報の取得
   Future<Location> getCurrentLocation() async {
     return await locationManager.getCurrentLocation();
   }
